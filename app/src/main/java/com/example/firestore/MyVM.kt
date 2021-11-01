@@ -10,13 +10,12 @@ import com.google.firebase.ktx.Firebase
  class MyVM (application: Application): AndroidViewModel(application) {
      var TAG: String = "IAmMainActivity"
      val db = Firebase.firestore
-     val list: MutableLiveData<List<Note>>
-     val notes: ArrayList<Note> = arrayListOf()
+     //val list: MutableLiveData<List<Note>>
+     private val list:MutableLiveData<List<Note>> = MutableLiveData()
 
 
-     init {
-         list = MutableLiveData()
-     }
+
+
 
 
      fun getNotes(): MutableLiveData<List<Note>> {
@@ -31,7 +30,7 @@ import com.google.firebase.ktx.Firebase
 
          db.collection("Note").add(note)
              .addOnSuccessListener { Log.w("MainActivity", "Saving Data Successfully.")
-
+              getNote()
              }
              .addOnFailureListener { exception ->
                  Log.w(TAG, "Error Saving Data.", exception)
@@ -45,7 +44,7 @@ import com.google.firebase.ktx.Firebase
              .get()
              .addOnSuccessListener { result ->
 
-
+                 var notes: ArrayList<Note> = arrayListOf()
                  for (document in result) {
 
                      Log.d(TAG, "${document.id} => ${document.data}")
@@ -78,6 +77,7 @@ import com.google.firebase.ktx.Firebase
                      }
                  }
 
+                 getNote()
              }
              .addOnFailureListener { exception ->
                  Log.w("MainActivity", "Error getting documents.", exception)
